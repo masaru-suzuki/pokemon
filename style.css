@@ -1,0 +1,53 @@
+.battle-field {
+  width: 600px;
+  height: 400px;
+  background-color: beige;
+}
+.field {
+  width: 600px;
+  height: 200px;
+}
+.enemy-field {
+  display: flex;
+}
+.player-field {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.info {
+  width: 300px;
+}
+.hp-container {
+  display: flex;
+}
+.hp-gauge {
+  margin: 22px 10px;
+  background-color: rgb(185, 181, 181);
+  width: 200px;
+  height: 5px;
+  border-radius: 2.5px;
+  position: relative;
+}
+.enemy-hp-gauge {
+  position: absolute;
+  top: -16px;
+  left: 0;
+  background-color: red;
+  width: 200px;
+  height: 5px;
+  border-radius: 2.5px;
+  z-index: 1;
+}
+
+.enemy-info {
+  float: left;
+}
+.player-info {
+  float: right;
+}
+.container {
+  width: 300px;
+}
+.container img {
+  width: 70%;
+}

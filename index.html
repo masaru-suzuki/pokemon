@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Pokemon</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="battle-field">
+    <div class="field enemy-field">
+      <div class="info enemy-info">
+        <h4>ギャラドス<span class="level">L:80</span></h4>
+        <div class="hp-container">
+          <p>HP</p>
+          <div class="hp-gauge">
+            <p id="enemyGauge"></p>
+          </div>
+          <p id="enemyHp"></p>
+        </div>
+        <h>
+        <button class="btn"id="enemyAttackBtn">攻撃</button>
+      </div>
+      <div class="container enemy-img-container">
+        <img src="img/enemy.png" alt="">
+      </div>
+    </div>
+    <div class="field player-field">
+      <div class="info player-info">
+        <h4>ピカチュウ<span class="level">L:70</span></h4>
+        <div class="hp-container">
+          <p>HP</p>
+          <div class="hp-gauge"><span id="playerGauge"></span></div>
+          <p id="playerHp"></p>
+        </div>
+        <hr>
+        <button class="btn" id="playerAttackBtn">攻撃</button>
+      </div>
+      <div class="container player-img-container">
+        <img src="img/player.png" alt="">
+      </div>
+    </div>
+  <script src="js/main.js"></script>
+</body>
+</html>
