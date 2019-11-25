@@ -24,14 +24,13 @@ enemyHp.textContent = enemy.hp + '/'+ enemy.hp;
 enemyGauge.classList.add('enemy-gauge');
 //player
 const player = {name:'ピカチュウ', hp:100, lv:70, remainingHp: 100};
-let remainPlayerHp = player.hp
 let remainPlayerHpPercentage;
 playerHp.textContent = player.hp + '/'+ player.hp
 playerGauge.classList.add('player-gauge');
 
 //Initial
-let damage;
-playerAttackBtn.disabled = true;
+// let damage;
+// playerAttackBtn.disabled = true;
 
 
 
@@ -44,6 +43,7 @@ const start = () => {
   enemyGauge.style.width = 100 + '%'
   playerGauge.style.width = 100 + '%'
   // 最初からゲージが赤く表示される
+  // HPゲージが戻るまでのtratisionを無くしたい
   // enemyGauge.classList.add('enemy-gauge');
   // playerGauge.classList.add('player-gauge');
   enemyGauge.style.backgroundColor = 'green';
@@ -55,25 +55,31 @@ const start = () => {
 }
 const calculateDamage = () => {
   //level差でダメージ幅変えたい
-  const minDamage = 10;
-  const maxDamage = 30;
+  const minDamage = 50;
+  const maxDamage = 70;
   damage = minDamage + Math.floor(Math.random() * (maxDamage + 1 -minDamage));
 }
 const updateEnemyHp = () => {
   enemy.remainingHp -= damage;
-  //  remainEnemyHp = enemy.hp -= damage;
-  //  にすると、最大Hpの表示がremainEnemyHpになる。なんで？
-  //  remainEnemyHp = enemy.hp であり、そこから-= damageを処理するから
+   /*remainEnemyHp = enemy.hp -= damage;
+   にすると、最大Hpの表示がremainEnemyHpになる。なんで？
+   remainEnemyHp = enemy.hp であり、そこから-= damageを処理するから*/
+   
+   ///////////////不明点1////////////////////////////////////
+   //  ダメージを徐々にカウントダウンして表示する方法は？
+   //  for文でダメージ分繰り返し処理?setInterval?
 
-
-  ///////////////不明点1////////////////////////////////////
-  //  ダメージを徐々にカウントダウンして表示する方法は？
-  //  damage/damageで1づつダメージをカウント
-  //  for文でダメージ分繰り返し処理
-  // for ( let i = 0; i < damage; i++){
-  //   enemy.remainingHp -= 1;
-  //   enemyHp.textContent = enemy.remainingHp + '/'+ enemy.hp
-  // }
+   //HP Status Update
+//   for ( let i = 0; i <= damage; i++){
+//   enemy.remainingHp --;
+  enemyHp.textContent = enemy.remainingHp + '/'+ enemy.hp;
+//  }
+//   const timeId = setInterval(() => {
+//     updateEnemyHp();
+//   }, 100);
+//   if (i === damage){
+//     clearInterval(timeId);
+//   }
 }
 const updatePlayerHp = () => {
   player.remainingHp -= damage;
@@ -82,8 +88,6 @@ const updateEnemyHpGauge = () => {
   //cssに動きをつけているのがわかったほうがいい
   //cssなのか数値を変更しているのか
 
-  //HP Status Update
-  enemyHp.textContent = enemy.remainingHp + '/'+ enemy.hp
 
   //enemyGaugeのwidth調整
   enemyGauge.classList.add('enemy-gauge')
@@ -160,7 +164,7 @@ enemyAttackBtn.addEventListener('click', (e) => {
   //ダメージを与えたのをimgに動きをつけることで表現したい
   //HP ReduceMotion
   //leftHpが減少していくのをleftHpに動きをつけることで表現したい
-    updateEnemyHp();
+  updateEnemyHp();
   
   //HP Gauge Motion
   updateEnemyHpGauge();
