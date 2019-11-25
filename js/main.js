@@ -14,6 +14,8 @@ const enemyAttackBtn = document.getElementById('enemyAttackBtn');
 const playerGauge = document.getElementById('playerGauge');
 const playerHp = document.getElementById('playerHp');
 const playerAttackBtn = document.getElementById('playerAttackBtn');
+const enemyGaugeMotion = document.querySelector('.enemy-gauge');
+const playerGaugeMotion = document.querySelector('.player-gauge');
 
 //enemy
 const enemy = {name:'ギャラドス', hp:120, lv:80, remainingHp: 120};
@@ -53,8 +55,8 @@ const start = () => {
 }
 const calculateDamage = () => {
   //level差でダメージ幅変えたい
-  const minDamage = 30;
-  const maxDamage = 50;
+  const minDamage = 10;
+  const maxDamage = 30;
   damage = minDamage + Math.floor(Math.random() * (maxDamage + 1 -minDamage));
 }
 const updateEnemyHp = () => {
@@ -62,6 +64,16 @@ const updateEnemyHp = () => {
   //  remainEnemyHp = enemy.hp -= damage;
   //  にすると、最大Hpの表示がremainEnemyHpになる。なんで？
   //  remainEnemyHp = enemy.hp であり、そこから-= damageを処理するから
+
+
+  ///////////////不明点1////////////////////////////////////
+  //  ダメージを徐々にカウントダウンして表示する方法は？
+  //  damage/damageで1づつダメージをカウント
+  //  for文でダメージ分繰り返し処理
+  // for ( let i = 0; i < damage; i++){
+  //   enemy.remainingHp -= 1;
+  //   enemyHp.textContent = enemy.remainingHp + '/'+ enemy.hp
+  // }
 }
 const updatePlayerHp = () => {
   player.remainingHp -= damage;
@@ -69,9 +81,12 @@ const updatePlayerHp = () => {
 const updateEnemyHpGauge = () => {
   //cssに動きをつけているのがわかったほうがいい
   //cssなのか数値を変更しているのか
+
+  //HP Status Update
   enemyHp.textContent = enemy.remainingHp + '/'+ enemy.hp
-  enemyGauge.classList.add('enemy-gauge')
+
   //enemyGaugeのwidth調整
+  enemyGauge.classList.add('enemy-gauge')
   let remainEnemyHpPercentage = enemy.remainingHp / enemy.hp * 100;
   enemyGauge.style.width = remainEnemyHpPercentage + '%';
   if(remainEnemyHpPercentage < 0){
@@ -113,19 +128,24 @@ const enemyTurnEnd = () => {
   enemyAttackBtn.disabled = false;
   playerAttackBtn.disabled = true;
 }
+/////////////////不明点２///////////////////////////
+// alertのタイミングをHPゲージが０になってからにしたい
 const processKillEnemy = () => {
-  if(enemy.remainingHp <= 0) {
     enemyHp.textContent = 0 + '/'+ enemy.hp
-    alert('You Win!');
-    start();
-    return;
-  }
+    // trasitionendを使ってもうまく行かない・・・
+    // enemyGaugeMotion.addEventListener('transitionend',(e) => {
+      alert('You Win!');
+      start();
+      return;
+    // });
 }
 const processKilledPlayer = () => {
   player.textContent = 0 + '/'+ player.hp
+  // playerGaugeMotion.addEventListener('transitionend',(e) => {
   alert('You Lose!');
   start();
   return;
+// });
 }
 
 
@@ -182,5 +202,3 @@ playerAttackBtn.addEventListener('click', (e) => {
 
 // function 動詞＋名詞
 // コードを読んだ時に文章のように理解できることが理想
-
-// attackdamage => attaccienemys

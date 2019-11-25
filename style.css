@@ -39,6 +39,7 @@
   height: 5px;
   border-radius: 2.5px;
   z-index: 1;
+  transition: 2s;
 }
 .enemy-info {
   float: left;
@@ -66,6 +67,7 @@
   height: 5px;
   border-radius: 2.5px;
   z-index: 1;
+  transition: 2s;
 }
 .container img {
   width: 70%;
