@@ -9,28 +9,28 @@
 注意点:ターン制にするので、そのキャラのターンでないと攻撃ボタンを押せない
 -------------------------------------------*/
 const enemyGauge = document.getElementById('enemyGauge');
-const enemyHp = document.getElementById('enemyHp');
+const enemyHpHtmlElement = document.getElementById('enemyHp');
 const enemyAttackBtn = document.getElementById('enemyAttackBtn');
 const playerGauge = document.getElementById('playerGauge');
-const playerHp = document.getElementById('playerHp');
+const playerHpHtmlElement = document.getElementById('playerHp');
 const playerAttackBtn = document.getElementById('playerAttackBtn');
 const enemyGaugeMotion = document.querySelector('.enemy-gauge');
 const playerGaugeMotion = document.querySelector('.player-gauge');
 
 //enemy
 const enemy = {name:'ギャラドス', hp:120, lv:80, remainingHp: 120};
-let remainEnemyHpPercentage;
-enemyHp.textContent = enemy.hp + '/'+ enemy.hp;
+// let remainEnemyHpPercentage;
+// enemyHpHtmlElement.textContent = enemy.hp + '/'+ enemy.hp;
 enemyGauge.classList.add('enemy-gauge');
 //player
 const player = {name:'ピカチュウ', hp:100, lv:70, remainingHp: 100};
-let remainPlayerHpPercentage;
-playerHp.textContent = player.hp + '/'+ player.hp
+// let remainPlayerHpPercentage;
+// playerHpHtmlElement.textContent = player.hp + '/'+ player.hp
 playerGauge.classList.add('player-gauge');
 
 //Initial
-// let damage;
-// playerAttackBtn.disabled = true;
+let damage;
+playerAttackBtn.disabled = true;
 
 
 
@@ -48,10 +48,12 @@ const start = () => {
   // playerGauge.classList.add('player-gauge');
   enemyGauge.style.backgroundColor = 'green';
   playerGauge.style.backgroundColor = 'green';
-  enemyHp.textContent = enemy.remainingHp + '/'+ enemy.hp
-  playerHp.textContent = player.remainingHp + '/'+ player.hp
+  enemyHpHtmlElement.textContent = enemy.remainingHp + '/'+ enemy.hp
+  playerHpHtmlElement.textContent = player.remainingHp + '/'+ player.hp
   playerAttackBtn.disabled = true;
   enemyAttackBtn.disabled = false;
+  console.log(enemy.remainingHp);
+  console.log(player.remainingHp);
 }
 const calculateDamage = () => {
   //level差でダメージ幅変えたい
@@ -59,31 +61,105 @@ const calculateDamage = () => {
   const maxDamage = 70;
   damage = minDamage + Math.floor(Math.random() * (maxDamage + 1 -minDamage));
 }
+/*//////////////////////////////////////////////////////////////////
 const updateEnemyHp = () => {
-  enemy.remainingHp -= damage;
-   /*remainEnemyHp = enemy.hp -= damage;
-   にすると、最大Hpの表示がremainEnemyHpになる。なんで？
-   remainEnemyHp = enemy.hp であり、そこから-= damageを処理するから*/
-   
-   ///////////////不明点1////////////////////////////////////
-   //  ダメージを徐々にカウントダウンして表示する方法は？
-   //  for文でダメージ分繰り返し処理?setInterval?
+  // 雑だけどsetIntervalでいける
+  // JSに慣れてきたらpromiseとrecursionで書きたい
+  let remainingDamage = damage;
+  let interval;
 
-   //HP Status Update
-//   for ( let i = 0; i <= damage; i++){
-//   enemy.remainingHp --;
-  enemyHp.textContent = enemy.remainingHp + '/'+ enemy.hp;
-//  }
-//   const timeId = setInterval(() => {
-//     updateEnemyHp();
-//   }, 100);
-//   if (i === damage){
-//     clearInterval(timeId);
-//   }
-}
+  interval = setInterval(() => {
+    console.log({ remainingDamage, remainingHp: enemy.remainingHp });
+    if (remainingDamage <= 0) return clearInterval(interval);
+
+    enemy.remainingHp--;
+    enemyHp.textContent = enemy.remainingHp + "/" + enemy.hp;
+    remainingDamage--;
+  }, 20);
+};
+
 const updatePlayerHp = () => {
   player.remainingHp -= damage;
+};
+
+// Functionを使って、繰り返しを避ける
+enemyAttackBtn.addEventListener("click", e => {
+  calculateDamage(); // 同じ
+  updateEnemyHp(); // playerかenemyか以外の処理は同じ
+  updateEnemyHpGauge(); // playerかenemyか以外の処理は同じ
+  if (enemy.remainingHp <= 0) return processKillEnemy();
+  playerTurnEnd(); // playerかenemyか以外の処理は同じ
+});
+playerAttackBtn.addEventListener("click", e => {
+  calculateDamage();
+  updatePlayerHp();
+  updatePlayerHpGauge();
+  if (player.remainingHp <= 0) return processKilledPlayer();
+  enemyTurnEnd();
+});
+
+// 例えばupdateEnemyHpは
+const updateHp = (target, targetElement, damage) => {
+  let remainingDamage = damage;
+  let interval;
+
+  interval = setInterval(() => {
+    console.log({ remainingDamage, remainingHp: target.remainingHp });
+    if (remainingDamage <= 0) return clearInterval(interval);
+
+    target.remainingHp--;
+    targetElement.textContent = target.remainingHp + "/" + target.hp;
+    remainingDamage--;
+  }, 20);
+};
+
+// のようにして、
+
+const enemyHpHtmlElement = document.getElementById("enemyHp"); //enemyHpだとHTMLなのかJSのVariableなのか分かりづらい
+calculateDamage();
+updateHp(enemy, enemyHpHtmlElement, damage);
+//...
+calculateDamage();
+updateHp(player, playerHpHtmlElement, damage);
+
+// のように再利用するといいね
+////////////////////////////////////////////////////////////////////*/
+const updateHp = (target,targetHpHtmlElement,damage) => {
+  // enemy.remainingHp -= damage;
+  /*remainEnemyHp = enemy.hp -= damage;
+  にすると、最大Hpの表示がremainEnemyHpになる。なんで？
+  remainEnemyHp = enemy.hp であり、そこから-= damageを処理するから*/
+   
+/*//////////////不明点1////////////////////////////////////
+  ダメージを徐々にカウントダウンして表示する方法は？
+  for文でダメージ分繰り返し処理?setInterval?
+
+   HP Status Update
+  for ( let i = 0; i <= damage; i++){
+  enemy.remainingHp --;
+  enemyHp.textContent = enemy.remainingHp + '/'+ enemy.hp;
+
+  const timeId = setInterval(() => {
+    updateEnemyHp();
+  }, 100);
+  if (i === damage){
+    clearInterval(timeId);
+  }
+for loopだと、ただ処理をするだけだから多分5msくらいで終わってしまうからアニメーションみたいにならない。
+setIntervalにすることで、60msごとに一度処理するみたいになるから数字が減っていくのが目で見えるようになる
+/////////////////////////////////////////////////*/
+//////////変更後///////////////////////////
+let interval;
+let remainingDamage = damage;
+interval = setInterval(() => {
+  if(remainingDamage === 0) return clearInterval(interval);
+  
+  target.remainingHp --;
+  targetHpHtmlElement.textContent = target.remainingHp + '/' + target.hp
+  remainingDamage --;
+}, 20);
 }
+/*
 const updateEnemyHpGauge = () => {
   //cssに動きをつけているのがわかったほうがいい
   //cssなのか数値を変更しているのか
@@ -107,7 +183,7 @@ const updateEnemyHpGauge = () => {
 const updatePlayerHpGauge = () => {
   //cssに動きをつけているのがわかったほうがいい
   //cssなのか数値を変更しているのか
-  playerHp.textContent = player.remainingHp + '/'+ player.hp
+  playerHpHtmlElement.textContent = player.remainingHp + '/'+ player.hp
   playerGauge.classList.add('player-gauge')
   //playerGaugeのwidth調整
   let remainPlayerHpPercentage = player.remainingHp / player.hp * 100;
@@ -122,6 +198,28 @@ const updatePlayerHpGauge = () => {
     playerGauge.style.backgroundColor = 'yellow';
   }
 
+}*/
+//省略
+const updateHpGauge = (target,targetHpGauge,damage) => {
+  enemyGauge.classList.add('enemy-gauge')
+  playerGauge.classList.add('player-gauge')
+  //remainingHpが既出だったので、leftHpとした
+  let leftHp = target.remainingHp - damage;
+  let remainingHpPercentage = leftHp / target.hp * 100;
+  targetHpGauge.style.width = remainingHpPercentage + '%';
+  if(remainingHpPercentage < 0){
+    targetHpGauge.style.width = 0;
+  }
+  // Change Color PlayerHpGauge
+  if (remainingHpPercentage < 20){
+    targetHpGauge.style.backgroundColor = 'red';
+  } else if (remainingHpPercentage < 50){
+    targetHpGauge.style.backgroundColor = 'yellow';
+  }
+  console.log(leftHp);
+  console.log(target.hp)
+  console.log(remainingHpPercentage);
+
 }
 
 const playerTurnEnd = () => {
@@ -135,7 +233,7 @@ const enemyTurnEnd = () => {
 /////////////////不明点２///////////////////////////
 // alertのタイミングをHPゲージが０になってからにしたい
 const processKillEnemy = () => {
-    enemyHp.textContent = 0 + '/'+ enemy.hp
+  enemyHpHtmlElement.textContent = 0 + '/'+ enemy.hp
     // trasitionendを使ってもうまく行かない・・・
     // enemyGaugeMotion.addEventListener('transitionend',(e) => {
       alert('You Win!');
@@ -164,10 +262,10 @@ enemyAttackBtn.addEventListener('click', (e) => {
   //ダメージを与えたのをimgに動きをつけることで表現したい
   //HP ReduceMotion
   //leftHpが減少していくのをleftHpに動きをつけることで表現したい
-  updateEnemyHp();
+  updateHp(enemy,enemyHpHtmlElement,damage);
   
   //HP Gauge Motion
-  updateEnemyHpGauge();
+  updateHpGauge(enemy,enemyGauge,damage);
   //HPが０になったときの処理
   if(enemy.remainingHp <= 0) {
     processKillEnemy();
@@ -177,8 +275,6 @@ enemyAttackBtn.addEventListener('click', (e) => {
   }
 });
 
-
-
 //Enemy Turn
 playerAttackBtn.addEventListener('click', (e) => {
   //receive damage
@@ -187,9 +283,9 @@ playerAttackBtn.addEventListener('click', (e) => {
   //ダメージを受けたのをimgに動きをつけることで表現したい
   //HP ReduceMotion
   //leftHpが減少していくのをleftHpに動きをつけることで表現したい
-    updatePlayerHp();
+    updateHp(player,playerHpHtmlElement,damage);
   //HP Gauge Motion
-  updatePlayerHpGauge();
+  updateHpGauge(player,playerGauge,damage);
   //HPが０になったときの処理
   if(player.remainingHp <= 0) {
     processKilledPlayer();
@@ -198,7 +294,6 @@ playerAttackBtn.addEventListener('click', (e) => {
     enemyTurnEnd();
   }
   });
-
 
 ////////////コメント///////////////////////
 // なんで動かないか自分で探す
