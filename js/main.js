@@ -32,16 +32,12 @@ playerGauge.classList.add('player-gauge');
 let damage;
 playerAttackBtn.disabled = true;
 
-
-
-
-
 //////////////////////////function/////////////////////////////
 const start = () => {
   enemy.remainingHp = enemy.hp;
   player.remainingHp = player.hp;
-  enemyGauge.style.width = 100 + '%'
-  playerGauge.style.width = 100 + '%'
+  enemyGauge.style.width = 100 + "%";
+  playerGauge.style.width = 100 + "%";
   // 最初からゲージが赤く表示される
   // HPゲージが戻るまでのtratisionを無くしたい
   // enemyGauge.classList.add('enemy-gauge');
@@ -164,38 +160,36 @@ const updateEnemyHpGauge = () => {
   //cssに動きをつけているのがわかったほうがいい
   //cssなのか数値を変更しているのか
 
-
   //enemyGaugeのwidth調整
-  enemyGauge.classList.add('enemy-gauge')
-  let remainEnemyHpPercentage = enemy.remainingHp / enemy.hp * 100;
-  enemyGauge.style.width = remainEnemyHpPercentage + '%';
-  if(remainEnemyHpPercentage < 0){
+  enemyGauge.classList.add("enemy-gauge");
+  let remainEnemyHpPercentage = (enemy.remainingHp / enemy.hp) * 100;
+  enemyGauge.style.width = remainEnemyHpPercentage + "%";
+  if (remainEnemyHpPercentage < 0) {
     enemyGauge.style.width = 0;
   }
   // Change Color EnemyHpGauge
-  if (remainEnemyHpPercentage < 20){
-    enemyGauge.style.backgroundColor = 'red';
-  } else if (remainEnemyHpPercentage < 50){
-    enemyGauge.style.backgroundColor = 'yellow';
+  if (remainEnemyHpPercentage < 20) {
+    enemyGauge.style.backgroundColor = "red";
+  } else if (remainEnemyHpPercentage < 50) {
+    enemyGauge.style.backgroundColor = "yellow";
   }
-
-}
+};
 const updatePlayerHpGauge = () => {
   //cssに動きをつけているのがわかったほうがいい
   //cssなのか数値を変更しているのか
   playerHpHtmlElement.textContent = player.remainingHp + '/'+ player.hp
   playerGauge.classList.add('player-gauge')
   //playerGaugeのwidth調整
-  let remainPlayerHpPercentage = player.remainingHp / player.hp * 100;
-  playerGauge.style.width = remainPlayerHpPercentage + '%';
-  if(remainPlayerHpPercentage < 0){
+  let remainPlayerHpPercentage = (player.remainingHp / player.hp) * 100;
+  playerGauge.style.width = remainPlayerHpPercentage + "%";
+  if (remainPlayerHpPercentage < 0) {
     playerGauge.style.width = 0;
   }
   // Change Color PlayerHpGauge
-  if (remainPlayerHpPercentage < 20){
-    playerGauge.style.backgroundColor = 'red';
-  } else if (remainPlayerHpPercentage < 50){
-    playerGauge.style.backgroundColor = 'yellow';
+  if (remainPlayerHpPercentage < 20) {
+    playerGauge.style.backgroundColor = "red";
+  } else if (remainPlayerHpPercentage < 50) {
+    playerGauge.style.backgroundColor = "yellow";
   }
 
 }*/
@@ -225,11 +219,11 @@ const updateHpGauge = (target,targetHpGauge,damage) => {
 const playerTurnEnd = () => {
   enemyAttackBtn.disabled = true;
   playerAttackBtn.disabled = false;
-}
+};
 const enemyTurnEnd = () => {
   enemyAttackBtn.disabled = false;
   playerAttackBtn.disabled = true;
-}
+};
 /////////////////不明点２///////////////////////////
 // alertのタイミングをHPゲージが０になってからにしたい
 const processKillEnemy = () => {
@@ -242,20 +236,19 @@ const processKillEnemy = () => {
     // });
 }
 const processKilledPlayer = () => {
-  player.textContent = 0 + '/'+ player.hp
+  player.textContent = 0 + "/" + player.hp;
   // playerGaugeMotion.addEventListener('transitionend',(e) => {
-  alert('You Lose!');
+  alert("You Lose!");
   start();
   return;
-// });
-}
-
+  // });
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 start();
 
 //Player Turn
-enemyAttackBtn.addEventListener('click', (e) => {
+enemyAttackBtn.addEventListener("click", e => {
   //attack enemy
   calculateDamage();
   //attack Damage Motion
@@ -267,7 +260,7 @@ enemyAttackBtn.addEventListener('click', (e) => {
   //HP Gauge Motion
   updateHpGauge(enemy,enemyGauge,damage);
   //HPが０になったときの処理
-  if(enemy.remainingHp <= 0) {
+  if (enemy.remainingHp <= 0) {
     processKillEnemy();
     //turn Switch
   } else {
@@ -276,7 +269,7 @@ enemyAttackBtn.addEventListener('click', (e) => {
 });
 
 //Enemy Turn
-playerAttackBtn.addEventListener('click', (e) => {
+playerAttackBtn.addEventListener("click", e => {
   //receive damage
   calculateDamage();
   //receive Damage Motion
@@ -287,7 +280,7 @@ playerAttackBtn.addEventListener('click', (e) => {
   //HP Gauge Motion
   updateHpGauge(player,playerGauge,damage);
   //HPが０になったときの処理
-  if(player.remainingHp <= 0) {
+  if (player.remainingHp <= 0) {
     processKilledPlayer();
   } else {
     //turn Switch
