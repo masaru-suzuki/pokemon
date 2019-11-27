@@ -1,3 +1,6 @@
+// 課題
+// ・targetHpHtmlElemntがマイナスになったとき、０に戻るようにしたが、時差がある
+
 'use strict';
 {
 
@@ -35,20 +38,23 @@ const start = () => {
   enemyAttackBtn.disabled = false;
 }
 const calculateDamage = () => {
-  const minDamage = 50;
-  const maxDamage = 70;
+  const minDamage = 10;
+  const maxDamage = 30;
   damage = minDamage + Math.floor(Math.random() * (maxDamage + 1 -minDamage));
 }
 const updateHp = (target,targetHpHtmlElement,damage) => {
 let interval;
 let remainingDamage = damage;
-interval = setInterval(() => {
-  if(remainingDamage === 0) return clearInterval(interval);
 
+interval = setInterval(() => {
+  if (target.remainingHp <= 0){
+    targetHpHtmlElement.textContent = 0 + '/' + target.hp
+  }
+  if(remainingDamage === 0) return clearInterval(interval);
   target.remainingHp --;
   targetHpHtmlElement.textContent = target.remainingHp + '/' + target.hp
   remainingDamage --;
-}, 20);
+}, 60);
 }
 
 const updateHpGauge = (target,targetHpGauge,damage) => {
@@ -57,18 +63,14 @@ const updateHpGauge = (target,targetHpGauge,damage) => {
   let remainingHp = target.remainingHp - damage;
   let remainingHpPercentage = remainingHp / target.hp * 100;
   targetHpGauge.style.width = remainingHpPercentage + '%';
-  if(remainingHpPercentage < 0){
-    targetHpGauge.style.width = 0;
-  }
-  // Change Color PlayerHpGauge
-  if (remainingHpPercentage < 20){
-    targetHpGauge.style.backgroundColor = 'red';
-  } else if (remainingHpPercentage < 50){
-    targetHpGauge.style.backgroundColor = 'yellow';
-  }
 
+  if (remainingHpPercentage < 20){
+    targetHpGauge.style.backgroundColor = 'rgb(247, 79, 79)';
+  } else if (remainingHpPercentage < 50){
+    targetHpGauge.style.backgroundColor = 'rgb(252, 252, 119)';
+  }
 }
-const turnEnd = (target,damage) =>{
+const turnEnd = (target,targetHpGauge,targetHpHtmlElement,damage) =>{
   let remainingHp = target.remainingHp - damage;
   if(target === enemy){
     enemyAttackBtn.disabled = true;
@@ -77,44 +79,29 @@ const turnEnd = (target,damage) =>{
     enemyAttackBtn.disabled = false;
     playerAttackBtn.disabled = true;
   }
+
   if(remainingHp <= 0) {
-    alert('end')
-    return start();
+    targetHpHtmlElement.textContent = '0' + '/' + target.hp;
+    targetHpGauge.style.width = 0;
+    setTimeout(() => {
+      if(target === enemy){
+        alert('You are winner!')
+      }else{
+        alert('you are lose...')
+      }
+      return start();
+    }, 2000);
   }
-  console.log(target.remainingHp)
 }
-
-// const playerTurnEnd = () => {
-//   enemyAttackBtn.disabled = true;
-//   playerAttackBtn.disabled = false;
-// }
-// const enemyTurnEnd = () => {
-//   enemyAttackBtn.disabled = false;
-//   playerAttackBtn.disabled = true;
-// }
-
-// const processKillEnemy = () => {
-//   enemyHpHtmlElement.textContent = 0 + '/'+ enemy.hp
-//       alert('You Win!');
-//       start();
-//       return;
-// }
-// const processKilledPlayer = () => {
-//   player.textContent = 0 + '/'+ player.hp
-//   alert('You Lose!');
-//   start();
-//   return;
-// }
 
 ///////////////////////////////////////////////////////
 start();
-
 //Player Turn
 enemyAttackBtn.addEventListener('click', (e) => {
   calculateDamage();
   updateHp(enemy,enemyHpHtmlElement,damage);
   updateHpGauge(enemy,enemyGauge,damage);
-  turnEnd(enemy,damage);
+  turnEnd(enemy,enemyGauge,enemyHpHtmlElement,damage);
 });
 
 //Enemy Turn
@@ -122,7 +109,7 @@ playerAttackBtn.addEventListener('click', (e) => {
   calculateDamage();
     updateHp(player,playerHpHtmlElement,damage);
   updateHpGauge(player,playerGauge,damage);
-  turnEnd(player,damage);
+  turnEnd(player,playerGauge,playerHpHtmlElement,damage);
   });
 
 
