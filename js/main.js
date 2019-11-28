@@ -46,10 +46,10 @@ const start = () => {
   playerGauge.style.backgroundColor = 'green';
   enemyHpHtmlElement.textContent = enemy.remainingHp + '/'+ enemy.hp
   playerHpHtmlElement.textContent = player.remainingHp + '/'+ player.hp
+  damage = 0;
+  
   playerAttackBtn.disabled = true;
   enemyAttackBtn.disabled = false;
-  console.log(enemy.remainingHp);
-  console.log(player.remainingHp);
 }
 const calculateDamage = () => {
   //level差でダメージ幅変えたい
@@ -154,6 +154,8 @@ interval = setInterval(() => {
   targetHpHtmlElement.textContent = target.remainingHp + '/' + target.hp
   remainingDamage --;
 }, 20);
+
+console.log(target.remainingHp+'---ramainingHp');
 }
 /*
 const updateEnemyHpGauge = () => {
@@ -210,9 +212,8 @@ const updateHpGauge = (target,targetHpGauge,damage) => {
   } else if (remainingHpPercentage < 50){
     targetHpGauge.style.backgroundColor = 'yellow';
   }
-  console.log(leftHp);
-  console.log(target.hp)
-  console.log(remainingHpPercentage);
+console.log(damage+'---damage')
+  console.log(leftHp+'---lefthp');
 
 }
 

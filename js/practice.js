@@ -1,5 +1,5 @@
 // 課題
-// ・targetHpHtmlElemntがマイナスになったとき、０に戻るようにしたが、時差がある
+// ・targetHpHtmlElementがマイナスになったとき、０に戻るようにしたが、時差がある
 
 'use strict';
 {
@@ -107,7 +107,7 @@ enemyAttackBtn.addEventListener('click', (e) => {
 //Enemy Turn
 playerAttackBtn.addEventListener('click', (e) => {
   calculateDamage();
-    updateHp(player,playerHpHtmlElement,damage);
+  updateHp(player,playerHpHtmlElement,damage);
   updateHpGauge(player,playerGauge,damage);
   turnEnd(player,playerGauge,playerHpHtmlElement,damage);
   });
