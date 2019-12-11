@@ -10,9 +10,6 @@ const enemyAttackBtn = document.getElementById('enemyAttackBtn');
 const playerGauge = document.getElementById('playerGauge');
 const playerHpHtmlElement = document.getElementById('playerHp');
 const playerAttackBtn = document.getElementById('playerAttackBtn');
-const enemyGaugeMotion = document.querySelector('.enemy-gauge');
-const playerGaugeMotion = document.querySelector('.player-gauge');
-
 //enemy
 const enemy = {name:'ギャラドス', hp:120, lv:80, remainingHp: 120};
 enemyGauge.classList.add('enemy-gauge');
@@ -22,21 +19,36 @@ playerGauge.classList.add('player-gauge');
 
 //Initial
 let damage;
-playerAttackBtn.disabled = true;
 
-const start = () => {
-  enemy.remainingHp = enemy.hp;
-  player.remainingHp = player.hp;
-  enemyGauge.style.width = 100 + '%';
-  playerGauge.style.width = 100 + '%';
-  enemyGauge.style.backgroundColor = 'green';
-  playerGauge.style.backgroundColor = 'green';
-  enemyHpHtmlElement.textContent = enemy.remainingHp + '/'+ enemy.hp
-  playerHpHtmlElement.textContent = player.remainingHp + '/'+ player.hp
-  damage = 0;
-  playerAttackBtn.disabled = true;
-  enemyAttackBtn.disabled = false;
+const resetDamage = target => (target.remainingHp = target.hp);
+const resetGaugeStyle = element => (element.style.width = 100 + "%");
+const resetBGC = element => (element.style.backgroundColor = "green");
+const resetHpElement = (element, target) =>
+  (element.textContent = target.remainingHp + "/" + target.hp);
+const disableButton = element => (element.disabled = true);
+const enableButton = element => (element.disabled = false);
+
+const init = () => {
+  resetDamage(enemy);
+  resetDamage(player);
+  resetGaugeStyle(enemyGauge);
+  resetGaugeStyle(playerGauge);
+  resetBGC(enemyGauge);
+  resetBGC(playerGauge);
+  resetHpElement(enemyHpHtmlElement, enemy);
+  resetHpElement(playerHpHtmlElement, player);
+  disableButton(playerAttackBtn);
+  enableButton(enemyAttackBtn);
+};
+class HpElements {
+  static update(target, HpHtmlElement, remainingHp) {
+    console.log(remainingHp);
+    if (remainingHp <= 0) {
+      HpHtmlElement.textContent = 0 + '/' + target.hp;
+    }
+    }
 }
+
 const calculateDamage = () => {
   const minDamage = 10;
   const maxDamage = 30;
@@ -45,15 +57,15 @@ const calculateDamage = () => {
 const updateHp = (target,targetHpHtmlElement,damage) => {
 let interval;
 let remainingDamage = damage;
-
 interval = setInterval(() => {
-  if (target.remainingHp <= 0){
-    targetHpHtmlElement.textContent = 0 + '/' + target.hp
-  }
-  if(remainingDamage === 0) return clearInterval(interval);
-  target.remainingHp --;
-  targetHpHtmlElement.textContent = target.remainingHp + '/' + target.hp
-  remainingDamage --;
+  // if (target.remainingHp <= 0){
+    // targetHpHtmlElement.textContent = 0 + '/' + target.hp
+    // }
+    if(remainingDamage === 0) return clearInterval(interval);
+    target.remainingHp --;
+    targetHpHtmlElement.textContent = target.remainingHp + '/' + target.hp
+    remainingDamage --;
+    HpElements.update(target, targetHpHtmlElement, target.remainingHp)
 }, 60);
 }
 
@@ -80,22 +92,33 @@ const turnEnd = (target,targetHpGauge,targetHpHtmlElement,damage) =>{
     playerAttackBtn.disabled = true;
   }
 
-  if(remainingHp <= 0) {
-    targetHpHtmlElement.textContent = '0' + '/' + target.hp;
-    targetHpGauge.style.width = 0;
+  // HpElements.update(target, targetHpHtmlElement, remainingHp);
+  if (target.remainingHp <= 0){
+    targetHpHtmlElement.textContent = 0 + '/' + target.hp
+  }
     setTimeout(() => {
       if(target === enemy){
         alert('You are winner!')
       }else{
         alert('you are lose...')
       }
-      return start();
+      return init();
     }, 2000);
-  }
+  // }
 }
 
 ///////////////////////////////////////////////////////
-start();
+init();
+new HpElements();
+/*=====================class===================================================================================================================
+
+//player turn
+
+
+
+============================================================================================================================================*/
+
+
 //Player Turn
 enemyAttackBtn.addEventListener('click', (e) => {
   calculateDamage();
