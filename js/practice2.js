@@ -36,11 +36,14 @@ class character {
     this.init();
 
     this.target.btn.addEventListener('click', () => {
+      // this.calculateDamage();
+      // this.updateHp();
+      // this.updateHpGauge();
       this.game();
     });
     }
     async game() {
-
+      //ここにまとめようと思ったんだけど、error
     }
     init() {
       resetDamage(enemy);
