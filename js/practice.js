@@ -11,10 +11,10 @@ const playerGauge = document.getElementById('playerGauge');
 const playerHpHtmlElement = document.getElementById('playerHp');
 const playerAttackBtn = document.getElementById('playerAttackBtn');
 //enemy
-const enemy = {name:'ギャラドス', hp:120, lv:80, remainingHp: 120};
+const enemy = {name:'ギャラドス', hp:40, lv:80, remainingHp: 40};
 enemyGauge.classList.add('enemy-gauge');
 //player
-const player = {name:'ピカチュウ', hp:100, lv:70, remainingHp: 100};
+const player = {name:'ピカチュウ', hp:40, lv:70, remainingHp: 40};
 playerGauge.classList.add('player-gauge');
 
 //Initial
@@ -41,10 +41,14 @@ const init = () => {
   enableButton(enemyAttackBtn);
 };
 class HpElements {
-  static update(target, HpHtmlElement, remainingHp) {
-    console.log(remainingHp);
+  constructor(target, HpHtmlElement) {
+    this.target = target;
+    this.HpHtmlElement = HpHtmlElement;
+  }
+  update() {
+    let remainingHp = this.target.remainingHp - damage;
     if (remainingHp <= 0) {
-      HpHtmlElement.textContent = 0 + '/' + target.hp;
+      this.HpHtmlElement.textContent = 0 + '/' + this.target.hp;
     }
     }
 }
@@ -54,19 +58,16 @@ const calculateDamage = () => {
   const maxDamage = 30;
   damage = minDamage + Math.floor(Math.random() * (maxDamage + 1 -minDamage));
 }
-const updateHp = (target,targetHpHtmlElement,damage) => {
+const updateHp = (target,HpHtmlElement,damage) => {
 let interval;
 let remainingDamage = damage;
 interval = setInterval(() => {
-  // if (target.remainingHp <= 0){
-    // targetHpHtmlElement.textContent = 0 + '/' + target.hp
-    // }
     if(remainingDamage === 0) return clearInterval(interval);
     target.remainingHp --;
-    targetHpHtmlElement.textContent = target.remainingHp + '/' + target.hp
+    HpHtmlElement.textContent = target.remainingHp + '/' + target.hp
     remainingDamage --;
-    HpElements.update(target, targetHpHtmlElement, target.remainingHp)
-}, 60);
+    HpElements.update(target);
+  }, 60);
 }
 
 const updateHpGauge = (target,targetHpGauge,damage) => {
@@ -75,14 +76,15 @@ const updateHpGauge = (target,targetHpGauge,damage) => {
   let remainingHp = target.remainingHp - damage;
   let remainingHpPercentage = remainingHp / target.hp * 100;
   targetHpGauge.style.width = remainingHpPercentage + '%';
-
-  if (remainingHpPercentage < 20){
+  if (remainingHpPercentage <= 0) {
+    targetHpGauge.style.width = 0 + '%';
+  } else if (remainingHpPercentage < 20) {
     targetHpGauge.style.backgroundColor = 'rgb(247, 79, 79)';
-  } else if (remainingHpPercentage < 50){
+  } else if (remainingHpPercentage < 50) {
     targetHpGauge.style.backgroundColor = 'rgb(252, 252, 119)';
   }
 }
-const turnEnd = (target,targetHpGauge,targetHpHtmlElement,damage) =>{
+const turnEnd = (target, damage) =>{
   let remainingHp = target.remainingHp - damage;
   if(target === enemy){
     enemyAttackBtn.disabled = true;
@@ -91,11 +93,9 @@ const turnEnd = (target,targetHpGauge,targetHpHtmlElement,damage) =>{
     enemyAttackBtn.disabled = false;
     playerAttackBtn.disabled = true;
   }
-
-  // HpElements.update(target, targetHpHtmlElement, remainingHp);
-  if (target.remainingHp <= 0){
-    targetHpHtmlElement.textContent = 0 + '/' + target.hp
-  }
+  // HpElements.update(target,remainingHp);
+  if (remainingHp <= 0) {
+    // targetHpHtmlElement.textContent = 0 + '/' + target.hp;
     setTimeout(() => {
       if(target === enemy){
         alert('You are winner!')
@@ -104,12 +104,15 @@ const turnEnd = (target,targetHpGauge,targetHpHtmlElement,damage) =>{
       }
       return init();
     }, 2000);
-  // }
+  }
 }
 
 ///////////////////////////////////////////////////////
 init();
+
 new HpElements();
+console.log(HpElements.update)
+
 /*=====================class===================================================================================================================
 
 //player turn
@@ -121,18 +124,20 @@ new HpElements();
 
 //Player Turn
 enemyAttackBtn.addEventListener('click', (e) => {
+  HpElements(enemy, enemyHpHtmlElement);
   calculateDamage();
   updateHp(enemy,enemyHpHtmlElement,damage);
   updateHpGauge(enemy,enemyGauge,damage);
-  turnEnd(enemy,enemyGauge,enemyHpHtmlElement,damage);
+  turnEnd(enemy,damage);
 });
 
 //Enemy Turn
 playerAttackBtn.addEventListener('click', (e) => {
+  HpElements(player, playerHpHtmlElement);
   calculateDamage();
   updateHp(player,playerHpHtmlElement,damage);
   updateHpGauge(player,playerGauge,damage);
-  turnEnd(player,playerGauge,playerHpHtmlElement,damage);
+  turnEnd(player,damage);
   });
 
 
